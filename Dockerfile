@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 ENV PYTHONPATH /app
 
 EXPOSE 8080
-ENTRYPOINT ["python", "main/controller.py"]
+ENTRYPOINT ["python", "main/controller/QueueManagementController.py"]
