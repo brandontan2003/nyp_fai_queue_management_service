@@ -1,12 +1,12 @@
 version: "3.7"
 
 services:
-  id-checksum-util:
+  queue-management-service:
     init: true
     build:
       dockerfile: ./Dockerfile
-    image: id-checksum-util:latest
-    container_name: id-checksum-util
+    image: queue-management-service:latest
+    container_name: queue-management-service
     ports:
       - '8080:8080'
     restart: on-failure

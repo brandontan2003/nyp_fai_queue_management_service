@@ -1,10 +1,13 @@
 from flask import Flask, request
 
+from main.constant.ApiStatus import put
+from main.constant.QueueManagementConstant import api_v1, id_validator
+
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 
-@app.route("/api/v1/id-validator", methods=['PUT'])
+@app.route(api_v1 + id_validator, methods=[put])
 def id_validation_controller():
     return {"result": request.json['id_number']}
 
