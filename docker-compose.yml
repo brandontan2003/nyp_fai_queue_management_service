@@ -6,10 +6,41 @@ services:
     build:
       dockerfile: ./Dockerfile
     image: queue-management-service:latest
+    working_dir: /app
     container_name: queue-management-service
+    depends_on:
+      - queue-management-service-flyway
     ports:
       - '8080:8080'
     restart: on-failure
+
+  queue-management-service-mysql:
+    init: true
+    image: mysql:8.0.26
+    container_name: queue-management-service-mysql
+    env_file:
+      - ./.env
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  queue-management-service-flyway:
+    init: true
+    image: flyway/flyway
+    container_name: queue-management-service-flyway
+    command: -url='jdbc:mysql://queue-management-service-mysql/queue_management_db?allowPublicKeyRetrieval=true&useSSL=false' -schemas=queue_management_db  -user=admin -password=admin -connectRetries=60 repair migrate
+    volumes:
+      - ./main/resources/sql-scripts:/flyway/sql
+    depends_on:
+      - queue-management-service-mysql
+    restart: on-failure
+
+
+volumes:
+  mysql-data:
+    driver: local
 
 networks:
   default:
