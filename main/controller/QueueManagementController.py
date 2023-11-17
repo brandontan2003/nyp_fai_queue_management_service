@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from main.constant.ApiStatus import post
+from main.constant.ApiStatusConstant import post
 from main.constant.QueueManagementConstant import webhook
 
 app = Flask(__name__)
