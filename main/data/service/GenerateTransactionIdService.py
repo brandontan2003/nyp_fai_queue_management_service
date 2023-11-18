@@ -1,6 +1,6 @@
 from datetime import *
-import mysql.connector
 
+from main.config.QueueManagementDBConfig import queue_management_db_connection
 from main.constant.GenerateTransactionIdConstant import *
 from main.constant.QueueManagementConstant import date_pattern_format
 
@@ -9,13 +9,7 @@ class TransactionIDGenerator:
     def __init__(self, prefix="T"):
         self.prefix = prefix
         # TODO: Retrieve DB Connections depending on the environment
-        self.connection = mysql.connector.connect(
-            host="localhost",
-            port="3307",
-            user="admin",
-            password="admin",
-            database="queue_management_db"
-        )
+        self.connection = queue_management_db_connection
         self.cursor = self.connection.cursor()
         self.current_date = datetime.now().strftime("%Y-%m-%d")
 
