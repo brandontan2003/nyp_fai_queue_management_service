@@ -1,12 +1,10 @@
 from datetime import *
 import mysql.connector
 
-from main.constant.GenerateTransactionIdConstant import select_id_from_generate_transaction_id, \
-    insert_default_id_to_generate_transaction_id, update_new_transaction_id
+from main.constant.GenerateTransactionIdConstant import *
 from main.constant.QueueManagementConstant import date_pattern_format
 
 
-# TODO: Reset Transaction ID on daily
 class TransactionIDGenerator:
     def __init__(self, prefix="T"):
         self.prefix = prefix
@@ -19,17 +17,26 @@ class TransactionIDGenerator:
             database="queue_management_db"
         )
         self.cursor = self.connection.cursor()
+        self.current_date = datetime.now().strftime("%Y-%m-%d")
+
+    def check_date(self):
+        self.cursor.execute(query_date_from_transaction_id)
+        try:
+            last_date = self.cursor.fetchone()[0]
+            if str(last_date) != self.current_date:
+                # Reset the running number for the new day
+                self.cursor.execute(insert_default_value_transaction_id)
+                self.connection.commit()
+        except:
+            self.cursor.execute(insert_default_value_transaction_id)
+            self.connection.commit()
 
     def generate_transaction_id(self):
+        self.check_date()
+
         # Retrieve the current running number
         self.cursor.execute(select_id_from_generate_transaction_id)
-
-        try:
-            database_number = self.cursor.fetchone()[0]
-        except:
-            # Insert new record in the database
-            self.cursor.execute(insert_default_id_to_generate_transaction_id)
-            database_number = 0
+        database_number = self.cursor.fetchone()[0]
         new_running_number = database_number + 1
 
         # Update the running number
