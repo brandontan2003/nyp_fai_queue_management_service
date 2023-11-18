@@ -48,10 +48,3 @@ class TransactionIDGenerator:
         transaction_id = f"{self.prefix}{str_date}{new_running_number:05d}"
 
         return transaction_id
-
-
-# Test Transaction ID Generator
-generator = TransactionIDGenerator()
-print(generator.generate_transaction_id())
-print(generator.generate_transaction_id())
-
