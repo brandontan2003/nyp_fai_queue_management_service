@@ -8,7 +8,6 @@ from main.constant.QueueManagementConstant import date_pattern_format
 class TransactionIDGenerator:
     def __init__(self, prefix="T"):
         self.prefix = prefix
-        # TODO: Retrieve DB Connections depending on the environment
         self.connection = queue_management_db_connection
         self.cursor = self.connection.cursor()
         self.current_date = datetime.now().strftime("%Y-%m-%d")
