@@ -17,9 +17,11 @@ def webhook():
     transaction_id = generator.generate_transaction_id()
     print(req)
     return {
-        'fulfillmentText': 'This is a sample response from your webhook!' + transaction_id
+        'fulfillmentText': '''Thank you, your appointment has been successfully processed.
+        Please show the Transaction ID to the staff in the clinic when your turns nears.
+        This is your Transaction ID: ''' + transaction_id
     }
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
