@@ -18,19 +18,22 @@ class TransactionIDGenerator:
             last_date = self.cursor.fetchone()[0]
             if str(last_date) != self.current_date:
                 # Reset the running number for the new day
-                self.cursor.execute(insert_default_value_transaction_id)
+                self.cursor.execute(insert_default_trans_id_value)
                 self.connection.commit()
+                return 1
         except:
-            self.cursor.execute(insert_default_value_transaction_id)
+            self.cursor.execute(insert_default_trans_id_value)
             self.connection.commit()
+            return 1
+        return 0
 
     def generate_transaction_id(self):
-        self.check_date()
+        check_for_first = self.check_date()
 
         # Retrieve the current running number
         self.cursor.execute(select_id_from_generate_transaction_id)
         database_number = self.cursor.fetchone()[0]
-        new_running_number = database_number + 1
+        new_running_number = check_for_first + database_number + 1
 
         # Update the running number
         self.cursor.execute(update_new_transaction_id % new_running_number)
@@ -41,3 +44,6 @@ class TransactionIDGenerator:
         transaction_id = f"{self.prefix}{str_date}{new_running_number:05d}"
 
         return transaction_id
+
+
+print(TransactionIDGenerator().generate_transaction_id())

@@ -4,4 +4,4 @@ update_new_transaction_id = "UPDATE generate_transaction_id SET id = %s WHERE cr
 
 query_date_from_transaction_id = "SELECT created_date FROM generate_transaction_id ORDER BY created_date DESC LIMIT 1;"
 
-insert_default_value_transaction_id = "INSERT INTO generate_transaction_id (id, created_date) VALUES (0, CURRENT_DATE);"
+insert_default_trans_id_value = "INSERT INTO generate_transaction_id (id, created_date) VALUES (-1, CURRENT_DATE);"
