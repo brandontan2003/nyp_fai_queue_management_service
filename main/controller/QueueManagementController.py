@@ -1,7 +1,8 @@
 from flask import Flask, request
 
 from main.constant.ApiStatusConstant import post
-from main.constant.QueueManagementConstant import webhook
+from main.constant.QueueManagementConstant import webhook, registration_successful_response
+from main.data.entity.ResponsePayload import ResponsePayload
 from main.data.service.GenerateTransactionIdService import TransactionIDGenerator
 
 app = Flask(__name__)
@@ -16,11 +17,7 @@ def webhook():
     req = request.get_json(force=True)
     transaction_id = generator.generate_transaction_id()
     print(req)
-    return {
-        'fulfillmentText': '''Thank you, your appointment has been successfully processed.
-        Please show the Transaction ID to the staff in the clinic when your turns nears.
-        This is your Transaction ID: ''' + transaction_id
-    }
+    return ResponsePayload(registration_successful_response + transaction_id).to_dict()
 
 
 if __name__ == '__main__':
