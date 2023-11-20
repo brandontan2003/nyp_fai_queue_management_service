@@ -45,5 +45,3 @@ class TransactionIDGenerator:
 
         return transaction_id
 
-
-print(TransactionIDGenerator().generate_transaction_id())
