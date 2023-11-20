@@ -2,6 +2,8 @@ from flask import Flask, request
 
 from main.constant.ApiStatusConstant import post
 from main.constant.QueueManagementConstant import webhook, registration_successful_response, appointment_booking
+from main.data.entity.QueueTransaction import QueueTransaction
+from main.data.entity.QueueTransactionDataAccess import QueueTransactionDataAccess
 from main.data.entity.ResponsePayload import ResponsePayload
 from main.data.service.GenerateTransactionIdService import TransactionIDGenerator
 
@@ -18,6 +20,12 @@ def webhook():
     transaction_id = generator.generate_transaction_id()
     # print(dialogflow_request)
     if dialogflow_request["queryResult"]["intent"]["displayName"] == appointment_booking:
+        symptoms = dialogflow_request["queryResult"]["parameters"]["conditions"]
+        new_queue_transaction = QueueTransaction(transaction_id=transaction_id, symptoms=symptoms)
+        QueueTransactionDataAccess()\
+            .insert_queue_transaction_record(new_queue_transaction.transaction_id, new_queue_transaction.symptoms,
+                                             new_queue_transaction.status)
+
         return ResponsePayload(registration_successful_response + transaction_id).to_dict()
 
 
