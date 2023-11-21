@@ -13,15 +13,6 @@ class QueueTransactionDataAccess:
         self.connection = queue_management_db_connection
         self.cursor = self.connection.cursor()
 
-    def get_queue_transaction_by_transaction_id(self, transaction_id):
-        self.cursor.execute(retrieve_queue_transaction_by_transaction_id % transaction_id)
-        result = self.cursor.fetchone()
-
-        if result:
-            return QueueTransaction(transaction_id=result[0], symptoms=result[1], status=result[2])
-        else:
-            return ResponsePayload(transaction_id_not_found).to_dict()
-
     def insert_queue_transaction_record(self, transaction_id, symptoms, status):
         self.cursor.execute(insert_into_queue_transaction_sql, (transaction_id, symptoms, status))
         self.connection.commit()
@@ -34,17 +25,20 @@ class QueueTransactionDataAccess:
         if result:
             if queue.status == in_queue and status == cancelled:
                 self.cursor.execute(update_queue_transaction_sql % (status, transaction_id))
+                self.connection.commit()
                 return ResponsePayload(transaction_cancelled_successfully % transaction_id).to_dict()
 
             elif queue.status == in_queue and status == registered:
                 self.cursor.execute(update_queue_transaction_sql % (status, transaction_id))
+                self.connection.commit()
                 return ResponsePayload(transaction_registered_successfully % transaction_id).to_dict()
 
             elif queue.status == cancelled:
-                ResponsePayload(transaction_status_already_cancelled).to_dict()
+                return ResponsePayload(transaction_status_already_cancelled).to_dict()
 
             elif queue.status == registered:
-                ResponsePayload(transaction_status_already_registered).to_dict()
-
+                return ResponsePayload(transaction_status_already_registered).to_dict()
+            else:
+                return ResponsePayload(transaction_id_not_found).to_dict()
         else:
             return ResponsePayload(transaction_id_not_found).to_dict()

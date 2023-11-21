@@ -11,11 +11,13 @@ registered = "REGISTERED"
 # Intents Naming
 appointment_booking = "appointment_booking"
 check_queue = "check_queue"
-cancel_appointment = " cancel_appointment"
+cancel_appointment = "cancel_appointment"
 
 # Fulfilment Response
 registration_successful_response = '''Thank you, your appointment has been successfully processed. 
 Please show the Transaction ID to the staff in the clinic when your turns nears. This is your Transaction ID: '''
+
+something_went_wrong_error = "Something went wrong. Please try again later."
 
 transaction_cancelled_successfully = '''Your appointment with Transaction ID %s has been 
 successfully canceled. We appreciate your prompt action. If you have any further questions or need assistance, 
