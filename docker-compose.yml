@@ -6,6 +6,8 @@ services:
     build:
       dockerfile: ./Dockerfile
     image: queue-management-service:latest
+    environment:
+      - ENVIRONMENT=development
     working_dir: /app
     container_name: queue-management-service
     depends_on:
