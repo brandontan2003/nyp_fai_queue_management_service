@@ -3,6 +3,8 @@ webhook = "/webhook"
 
 date_pattern_format = "%d%m%Y"
 
+estimated_waiting_time_each = 5
+
 # Process Status
 in_queue = "IN_QUEUE"
 cancelled = "CANCELLED"
@@ -32,3 +34,9 @@ transaction_status_already_cancelled = "This transaction has been cancelled alre
 
 transaction_status_already_registered = "This transaction has been registered. " \
                                         "To cancelled the clinic registration, please find to our clinic staff."
+
+invalid_transaction_status = "This transaction is no longer valid."
+
+next_in_line_success = "You are next in the line, please head down to the clinic now."
+
+display_waiting_time_success = "There are %s of patients ahead of you, the estimated waiting time is %s minutes."

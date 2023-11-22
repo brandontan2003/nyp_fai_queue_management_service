@@ -2,7 +2,7 @@ from flask import Flask, request
 
 from main.constant.ApiStatusConstant import post
 from main.constant.QueueManagementConstant import webhook, registration_successful_response, appointment_booking, \
-    cancel_appointment, cancelled, something_went_wrong_error
+    cancel_appointment, cancelled, something_went_wrong_error, check_queue, in_queue
 from main.data.entity.QueueTransaction import QueueTransaction
 from main.data.entity.QueueTransactionDataAccess import QueueTransactionDataAccess
 from main.data.entity.ResponsePayload import ResponsePayload
@@ -33,6 +33,10 @@ def webhook():
     elif dialogflow_request["queryResult"]["intent"]["displayName"] == cancel_appointment:
         transaction_id = dialogflow_request["queryResult"]["queryText"]
         return queue_repo.update_transaction_record(transaction_id=transaction_id, status=cancelled)
+
+    elif dialogflow_request["queryResult"]["intent"]["displayName"] == check_queue:
+        transaction_id = dialogflow_request["queryResult"]["queryText"]
+        return queue_repo.retrieve_waiting_time_by_transaction_id(transaction_id=transaction_id, status=in_queue)
 
     return ResponsePayload(something_went_wrong_error).to_dict()
 

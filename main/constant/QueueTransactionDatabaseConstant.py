@@ -4,3 +4,6 @@ insert_into_queue_transaction_sql = '''INSERT INTO queue_transaction_table (tran
 VALUES (%s, %s, %s)'''
 
 update_queue_transaction_sql = "UPDATE queue_transaction_table SET status = '%s' WHERE transaction_id = '%s'"
+
+retrieve_waiting_time_by_transaction_id = \
+    "SELECT COUNT(*) FROM queue_transaction_table WHERE status = '%s' AND transaction_id <= '%s'"
