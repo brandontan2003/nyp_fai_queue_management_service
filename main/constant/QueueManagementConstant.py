@@ -1,9 +1,18 @@
 api_v1 = "/api/v1"
 webhook = "/webhook"
+update_transaction_status = "/update-transaction-status"
 
 date_pattern_format = "%d%m%Y"
 
 estimated_waiting_time_each = 5
+
+# DialogFlow Parameters
+query_result = "queryResult"
+query_text = "queryText"
+intent = "intent"
+display_name = "displayName"
+parameters = "parameters"
+conditions = "conditions"
 
 # Process Status
 in_queue = "IN_QUEUE"
