@@ -1,12 +1,22 @@
+import json
+
+from flask import Response
+
 from main.config.QueueManagementDBConfig import queue_management_db_connection
-from main.constant.QueueManagementConstant import transaction_id_not_found, in_queue, cancelled, registered, \
-    transaction_status_already_cancelled, transaction_status_already_registered, transaction_cancelled_successfully, \
-    transaction_registered_successfully, next_in_line_success, invalid_transaction_status
+from main.constant.ApiStatusConstant import status_success, status_error, success_http_code, bad_request_http_code, \
+    indent_level, content_type
+from main.constant.QueueManagementConstant import *
 from main.constant.QueueTransactionDatabaseConstant import retrieve_queue_transaction_by_transaction_id, \
     insert_into_queue_transaction_sql, update_queue_transaction_sql, retrieve_waiting_time_by_transaction_id
+from main.data.entity.ApiResponsePayload import ApiResponsePayload
 from main.data.entity.QueueTransaction import QueueTransaction
 from main.data.entity.ResponsePayload import ResponsePayload
-from main.data.service.QueueManagementService import get_waiting_time
+
+
+def get_waiting_time(count):
+    actual_count = count - 1
+    waiting_time = estimated_waiting_time_each * actual_count
+    return ResponsePayload(display_waiting_time_success % (actual_count, waiting_time)).to_dict()
 
 
 class QueueTransactionDataAccess:
@@ -60,3 +70,17 @@ class QueueTransactionDataAccess:
                 return get_waiting_time(queue_result)
         else:
             return ResponsePayload(transaction_id_not_found).to_dict()
+
+    def update_transaction_status(self, transaction_id, status):
+        self.cursor.execute(retrieve_queue_transaction_by_transaction_id % transaction_id)
+        result = self.cursor.fetchone()
+
+        if result:
+            self.cursor.execute(update_queue_transaction_sql % (status, transaction_id))
+            self.connection.commit()
+            response = json.dumps(ApiResponsePayload(status_success, update_transaction_success).to_json(),
+                                  indent=indent_level)
+            return Response(response, success_http_code, content_type=content_type)
+        else:
+            response = json.dumps(ApiResponsePayload(status_error, transaction_id_not_found).to_json())
+            return Response(response, bad_request_http_code, content_type=content_type)

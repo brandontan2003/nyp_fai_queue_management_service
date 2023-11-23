@@ -1,9 +1,20 @@
-from main.constant.QueueManagementConstant import estimated_waiting_time_each, display_waiting_time_success
-from main.data.entity.ResponsePayload import ResponsePayload
+import json
+
+from flask import Response
+
+from main.constant.ApiStatusConstant import status_error, bad_request_http_code, content_type, indent_level
+from main.constant.QueueManagementConstant import invalid_request_transaction_status, cancelled, registered
+from main.data.entity.ApiResponsePayload import ApiResponsePayload
+from main.data.entity.QueueTransactionDataAccess import QueueTransactionDataAccess
 
 
-def get_waiting_time(count):
-    actual_count = count - 1
-    waiting_time = estimated_waiting_time_each * actual_count
-    return ResponsePayload(display_waiting_time_success % (actual_count, waiting_time)).to_dict()
+queue_repo = QueueTransactionDataAccess()
 
+
+def update_transaction_status_service(transaction_id, status):
+    if status.upper() == cancelled or status.upper() == registered:
+        return queue_repo.update_transaction_status(transaction_id, status.upper())
+    else:
+        response = json.dumps(ApiResponsePayload(status_error, invalid_request_transaction_status).to_json(),
+                              indent=indent_level)
+        return Response(response, bad_request_http_code, content_type=content_type)

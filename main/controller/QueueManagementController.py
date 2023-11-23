@@ -1,9 +1,10 @@
-from flask import Flask, request
+import json
 
-from main.constant.ApiStatusConstant import post, put
-from main.constant.QueueManagementConstant import webhook, registration_successful_response, appointment_booking, \
-    cancel_appointment, cancelled, something_went_wrong_error, check_queue, in_queue, api_v1, update_transaction_status, \
-    query_result, intent, display_name, parameters, conditions, query_text
+from flask import Flask, request, Response
+
+from main.constant.ApiStatusConstant import post, put, status_error, bad_request_http_code, content_type, indent_level
+from main.constant.QueueManagementConstant import *
+from main.data.entity.ApiResponsePayload import ApiResponsePayload
 from main.data.entity.QueueTransaction import QueueTransaction
 from main.data.entity.QueueTransactionDataAccess import QueueTransactionDataAccess
 from main.data.entity.ResponsePayload import ResponsePayload
@@ -45,11 +46,12 @@ def webhook():
 @app.route(api_v1 + update_transaction_status, methods=[put])
 def update_transaction_status_controller():
     try:
-        transaction_id = request.json[""]
-        status = request.json[""]
-        return update_transaction_status_service()
+        transaction_id = request.json["transaction_id"]
+        status = request.json["status"]
+        return update_transaction_status_service(transaction_id, status)
     except:
-        return update_transaction_status_service()
+        response = json.dumps(ApiResponsePayload(status_error, missing_mandatory_field).to_json(), indent=indent_level)
+        return Response(response, bad_request_http_code, content_type=content_type)
 
 
 if __name__ == '__main__':

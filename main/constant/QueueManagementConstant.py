@@ -49,3 +49,9 @@ invalid_transaction_status = "This transaction is no longer valid."
 next_in_line_success = "You are next in the line, please head down to the clinic now."
 
 display_waiting_time_success = "There are %s of patients ahead of you, the estimated waiting time is %s minutes."
+
+
+# Update Transaction Status
+update_transaction_success = "Transaction status has been updated successfully."
+missing_mandatory_field = "Missing Mandatory Fields."
+invalid_request_transaction_status = "The transaction status is invalid."
