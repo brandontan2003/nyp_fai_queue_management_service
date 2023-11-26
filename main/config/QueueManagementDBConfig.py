@@ -12,6 +12,8 @@ else:
     raise ValueError(f"Invalid environment: {env}")
 
 
-queue_management_db_connection = mysql.connector.connect(**DB_CONFIG)
+queue_management_db_connection_pool = mysql.connector.pooling.MySQLConnectionPool(pool_name="queue_management_pool",
+                                                                                  pool_size=5, **DB_CONFIG)
 
+queue_management_db_connection = queue_management_db_connection_pool.get_connection()
 
