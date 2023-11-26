@@ -31,9 +31,9 @@ class QueueTransactionDataAccess:
     def update_transaction_record(self, transaction_id, status):
         self.cursor.execute(retrieve_queue_transaction_by_transaction_id % transaction_id)
         result = self.cursor.fetchone()
-        queue = QueueTransaction(transaction_id=result[0], symptoms=result[1], status=result[2])
 
         if result:
+            queue = QueueTransaction(transaction_id=result[0], symptoms=result[1], status=result[2])
             if queue.status == in_queue and status == cancelled:
                 self.cursor.execute(update_queue_transaction_sql % (status, transaction_id))
                 self.connection.commit()
